@@ -50,7 +50,7 @@ class _miCamaraState extends State<miCamara> {
   'autoConnect': false,
   }*/
   bool status = false;
-  String palabra = '';
+  String palabra = ' ';
 
   @override
   void initState() {
@@ -76,6 +76,9 @@ class _miCamaraState extends State<miCamara> {
     });
     socket.on('prediction', (data) {
       print('Recibida predicción: ${data['prediction']}');
+      setState(() {
+        palabra = data['prediction'];
+      });
     });
   }
 
@@ -94,7 +97,13 @@ class _miCamaraState extends State<miCamara> {
         backgroundColor: Colors.white54,
       ),
       body: Center(
-        child: Screenshot(controller: screenshotController, child: CameraPreview(controller!)),
+        child: Stack(
+          children: [
+            Screenshot(controller: screenshotController, child: CameraPreview(controller!)),
+            Positioned(child: Text(palabra, style: TextStyle(fontSize: 50, color: Colors.white)), left: 100, bottom: 0)
+
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(child: Icon(Icons.camera),
         onPressed: (){
@@ -127,10 +136,6 @@ class _miCamaraState extends State<miCamara> {
   }
 
   void convert(/*CameraImage image*/ dynamic bytes) async{
-    //int xd = 1;
-     //dynamic bytes = await convertCameraImageToBytes(image);
-
-     //dynamic bytes = await convertTojpeg(image);
      //print('size ${bytes.length}');
      String base64img = base64Encode(bytes);
 
