@@ -1,5 +1,4 @@
 import 'package:camera/camera.dart';
-import 'package:convert_native_img_stream/convert_native_img_stream.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
@@ -100,12 +99,12 @@ class _miCamaraState extends State<miCamara> {
         child: Stack(
           children: [
             Screenshot(controller: screenshotController, child: CameraPreview(controller!)),
-            Positioned(child: Text(palabra, style: TextStyle(fontSize: 50, color: Colors.white)), left: 100, bottom: 0)
+            Positioned(left: 100, bottom: 0, child: Text(palabra, style: const TextStyle(fontSize: 50, color: Colors.white)))
 
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(child: Icon(Icons.camera),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.camera),
         onPressed: (){
           status = !status;
           Timer.periodic(const Duration(milliseconds: 100), (timer) {
@@ -162,7 +161,7 @@ class _miCamaraState extends State<miCamara> {
       context: context,
       builder: (context) => Scaffold(
         appBar: AppBar(
-          title: Text("Captured widget screenshot"),
+          title: const Text("Captured widget screenshot"),
         ),
         body: Center(child: Image.memory(capturedImage)),
       ),
