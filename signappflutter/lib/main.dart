@@ -49,6 +49,7 @@ class _miCamaraState extends State<miCamara> {
   'autoConnect': false,
   }*/
   bool status = false;
+  Timer? _timer;
   String palabra = ' ';
 
   @override
@@ -106,10 +107,15 @@ class _miCamaraState extends State<miCamara> {
       ),
       floatingActionButton: FloatingActionButton(child: const Icon(Icons.camera),
         onPressed: (){
-          status = !status;
-          Timer.periodic(const Duration(milliseconds: 100), (timer) {
-            startCapture(status);
-          });
+          if(_timer == null || !_timer!.isActive){
+            _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+              startCapture();
+            });
+          }else{
+            print('cancel');
+            _timer?.cancel();
+            _timer = null;
+          }
 
           //initTranslation();
 
@@ -117,7 +123,7 @@ class _miCamaraState extends State<miCamara> {
     );
   }
 
-  void startCapture(bool status){
+  void startCapture(){
     //if (status == true){
       initTranslation();
     //}
