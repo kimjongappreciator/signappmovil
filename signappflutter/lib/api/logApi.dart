@@ -11,7 +11,7 @@ class logApi{
     final response = await http.get(uri);
     final body = response.body;
     final json = jsonDecode(body);
-    final result = json as List<dynamic>;
+    final result = json['translations'] as List<dynamic>;
     final transformed = result.map((e){
       return logmodel.fromJson(e);
     }).toList();

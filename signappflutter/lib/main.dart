@@ -5,13 +5,13 @@ import 'dart:convert';
 import 'package:screenshot/screenshot.dart';
 import 'package:signappflutter/api/logApi.dart';
 import 'package:signappflutter/model/logModel.dart';
+import 'package:signappflutter/screens/logs_view.dart';
 import 'dart:async';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 late List<CameraDescription> _cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   _cameras = await availableCameras();
   runApp(const MyApp());
 }
@@ -23,10 +23,42 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: miCamara()
+      home: miHome()
     );
   }
 }
+
+class miHome extends StatefulWidget {
+  const miHome({super.key});
+
+  @override
+  State<miHome> createState() => _miHomeState();
+}
+
+class _miHomeState extends State<miHome> {
+  int currentPageIndex = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index){
+          setState(() {
+            print(index);
+            currentPageIndex = index;
+          });
+        },selectedIndex: currentPageIndex ,
+          destinations: const<Widget>[
+          NavigationDestination(icon: Icon(Icons.home), label: 'Captura'),
+          NavigationDestination(icon: Icon(Icons.add_chart), label: 'logs')
+      ],
+      ),body:<Widget>[
+        const miCamara(),
+        const LogsView()
+    ][currentPageIndex],
+    );
+  }
+}
+
 
 class miCamara extends StatefulWidget {
   const miCamara({super.key});
@@ -45,21 +77,18 @@ class _miCamaraState extends State<miCamara> {
     'transports': ['websocket'],
     'autoConnect': false,
   });
-
-  bool status = false;
   Timer? _timer;
   String palabra = ' ';
+  String oracion = '';
 
   @override
   void initState() {
     super.initState();
-    socket.connect();
     controller = CameraController(_cameras[0], ResolutionPreset.medium);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
       }
-      setState(() {});
     }).catchError((Object e) {
       if (e is CameraException) {
         switch (e.code) {
@@ -72,10 +101,12 @@ class _miCamaraState extends State<miCamara> {
         }
       }
     });
+    socket.connect();
     socket.on('prediction', (data) {
-      print('Recibida predicción: ${data['prediction']}');
+      //print('Recibida predicción: ${data['prediction']}');
       setState(() {
         palabra = data['prediction'];
+        oracion = '$oracion $palabra';
       });
     });
   }
@@ -84,6 +115,8 @@ class _miCamaraState extends State<miCamara> {
   void dispose(){
     super.dispose();
     socket.disconnect();
+    socket.dispose();
+    controller.dispose();
   }
 
 
@@ -97,20 +130,32 @@ class _miCamaraState extends State<miCamara> {
       body: Center(
         child: Stack(
           children: [
+            const Positioned(left: 50, top: 300, child: Text('Para comenzar a capturar presiona el boton azul')),
             Screenshot(controller: screenshotController, child: CameraPreview(controller!)),
-            Positioned(left: 100, bottom: 0, child: Text(palabra, style: const TextStyle(fontSize: 50, color: Colors.white)))
+            Positioned(left: 100, bottom: 0, child: Text(palabra, style: const TextStyle(fontSize: 50, color: Colors.white))),
+            Positioned(
+              bottom: 15,
+              right: 16,
+              child: FloatingActionButton(onPressed: (){
+                print(oracion);
+                postLog(oracion);
+              },
+              backgroundColor: Colors.indigo,
+              child: const Icon(Icons.save),
+              ),
+            )
 
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(child: const Icon(Icons.camera),
+      floatingActionButton: FloatingActionButton(child: const Icon(Icons.camera_alt),
         onPressed: (){
           if(_timer == null || !_timer!.isActive){
             _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
               startCapture();
             });
           }else{
-            print('cancel');
+            //print('cancel');
             _timer?.cancel();
             _timer = null;
             setState(() {
@@ -125,14 +170,12 @@ class _miCamaraState extends State<miCamara> {
   }
 
   void startCapture(){
-    //if (status == true){
       initTranslation();
-    //}
   }
 
   void initTranslation(){
     screenshotController
-        .capture(delay: Duration(milliseconds: 5), pixelRatio: 0.5)
+        .capture(delay: const Duration(milliseconds: 5), pixelRatio: 0.5)
         .then((capturedImage) async {
       convert(capturedImage);
       //ShowCapturedWidget(context, capturedImage!);
@@ -158,21 +201,6 @@ class _miCamaraState extends State<miCamara> {
          body: jsonString
      );*/
 
-  }
-
-
-  Future<dynamic> ShowCapturedWidget(
-      BuildContext context, Uint8List capturedImage) {
-    return showDialog(
-      useSafeArea: false,
-      context: context,
-      builder: (context) => Scaffold(
-        appBar: AppBar(
-          title: const Text("Captured widget screenshot"),
-        ),
-        body: Center(child: Image.memory(capturedImage)),
-      ),
-    );
   }
 
   void showMessage(status){
@@ -212,7 +240,6 @@ class _miCamaraState extends State<miCamara> {
     logmodel body = logmodel(log: log, date: str );
     var json = body.toJson();
     var res = await logApi.postLog(body);
-    var decoded = jsonDecode(res);
     showMessage(res);
   }
 
