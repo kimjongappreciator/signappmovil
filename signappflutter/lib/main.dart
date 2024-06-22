@@ -115,6 +115,9 @@ class _miCamaraState extends State<miCamara> {
             print('cancel');
             _timer?.cancel();
             _timer = null;
+            setState(() {
+              palabra = ' ';
+            });
           }
 
           //initTranslation();
