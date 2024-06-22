@@ -1,9 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:screenshot/screenshot.dart';
+import 'package:signappflutter/api/logApi.dart';
+import 'package:signappflutter/model/logModel.dart';
 import 'dart:async';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -44,10 +45,7 @@ class _miCamaraState extends State<miCamara> {
     'transports': ['websocket'],
     'autoConnect': false,
   });
-  /*, <String, dynamic>{
-  'transports': ['websocket'],
-  'autoConnect': false,
-  }*/
+
   bool status = false;
   Timer? _timer;
   String palabra = ' ';
@@ -175,6 +173,47 @@ class _miCamaraState extends State<miCamara> {
         body: Center(child: Image.memory(capturedImage)),
       ),
     );
+  }
+
+  void showMessage(status){
+    String titulo = '';
+    String cuerpo = '';
+    if(status == 200){
+      titulo = 'Exito';
+      cuerpo = 'Log guardado con exito';
+    }
+    else{
+      titulo = 'Error';
+      cuerpo = 'Error al intentar guardar';
+    }
+
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(titulo),
+        content: Text(cuerpo),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'OK');
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Future<void> postLog(String log) async{
+    DateTime now = DateTime.now();
+    DateTime date = DateTime(now.year, now.month, now.day);
+    String str = date.toString();
+    logmodel body = logmodel(log: log, date: str );
+    var json = body.toJson();
+    var res = await logApi.postLog(body);
+    var decoded = jsonDecode(res);
+    showMessage(res);
   }
 
 }
