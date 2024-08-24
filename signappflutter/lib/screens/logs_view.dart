@@ -26,8 +26,8 @@ class _LogsViewState extends State<LogsView> {
         return ListTile(title: Text("Traduccion del ${logs[index].date}"),
         subtitle: Text("${logs[index].log}"),
         trailing: IconButton(onPressed: () { 
-          print('XD');
-          writer.writeCsv(logs[index].log.toString(), logs[index].date.toString());
+          showMessage(logs[index].date.toString(),logs[index].log.toString());
+          //writer.writeCsv(logs[index].log.toString(), logs[index].date.toString());
         }, icon: const Icon(Icons.download),),);
       },),
     );
@@ -45,28 +45,31 @@ class _LogsViewState extends State<LogsView> {
     });
   }
 
-  void showMessage(status){
+  void showMessage(String title, String content){
     String titulo = 'Guardar';
     String cuerpo = 'Seleccione el tipo de archivo';
-    dynamic op1 = const DropdownMenuEntry(value: 'csv', label: 'csv');
-    dynamic op2 = const DropdownMenuEntry(value: 'txt', label: 'tx');
 
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text(titulo),
-        content: Column(
-          children: [
-            Text(cuerpo),
-
-          ],
-        ),
+        content: Text(cuerpo),
         actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, 'OK');
-            },
-            child: const Text('OK'),
+          Row(
+            children: [
+              TextButton(
+                onPressed: () {
+                  writer.writeCsv(content, title);
+                },
+                child: const Text('CSV'),
+              ),
+              TextButton(
+                onPressed: () {
+                   writer.writeTxt(content, title);
+                },
+                child: const Text('TXT'),
+              ),
+            ],
           ),
         ],
       ),

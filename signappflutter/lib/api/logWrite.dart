@@ -14,7 +14,7 @@ class logWrite {
 
   Future<File> writeTxt(String content,String title) async {
     String newTitle = title.replaceAll("/", "-");
-    final directory = await _localFile;
+    final directory = await _localPath;
     final pathOfTheFileToWrite = "$directory/$newTitle.txt";
     File file = File(pathOfTheFileToWrite);
     // Write the file
