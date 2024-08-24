@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:signappflutter/api/logApi.dart';
+import 'package:signappflutter/api/logWrite.dart';
 
 import '../model/logModel.dart';
 
@@ -13,6 +14,7 @@ class LogsView extends StatefulWidget {
 class _LogsViewState extends State<LogsView> {
 
   List<logmodel> logs = [];
+  logWrite writer = logWrite();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +24,11 @@ class _LogsViewState extends State<LogsView> {
       ),
       body: ListView.builder(itemCount: logs.length, itemBuilder: (context, index){
         return ListTile(title: Text("Traduccion del ${logs[index].date}"),
-        subtitle: Text("${logs[index].log}"));
+        subtitle: Text("${logs[index].log}"),
+        trailing: IconButton(onPressed: () { 
+          print('XD');
+          writer.writeCsv(logs[index].log.toString(), logs[index].date.toString());
+        }, icon: const Icon(Icons.download),),);
       },),
     );
   }
@@ -33,9 +39,37 @@ class _LogsViewState extends State<LogsView> {
   }
   Future<void> getLogs() async{
     final response = await logApi.fetchLogs();
-    print(response);
+    //print(response);
     setState(() {
       logs = response;
     });
+  }
+
+  void showMessage(status){
+    String titulo = 'Guardar';
+    String cuerpo = 'Seleccione el tipo de archivo';
+    dynamic op1 = const DropdownMenuEntry(value: 'csv', label: 'csv');
+    dynamic op2 = const DropdownMenuEntry(value: 'txt', label: 'tx');
+
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(titulo),
+        content: Column(
+          children: [
+            Text(cuerpo),
+
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'OK');
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }

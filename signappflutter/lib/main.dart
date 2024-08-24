@@ -1,6 +1,5 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'dart:typed_data';
 import 'dart:convert';
 import 'package:screenshot/screenshot.dart';
 import 'package:signappflutter/api/logApi.dart';
@@ -43,7 +42,7 @@ class _miHomeState extends State<miHome> {
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index){
           setState(() {
-            print(index);
+            //print(index);
             currentPageIndex = index;
           });
         },selectedIndex: currentPageIndex ,

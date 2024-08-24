@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:signappflutter/model/logModel.dart';
 import 'package:http/http.dart' as http;
 
 class logApi{
   static const String logurl= 'http://192.168.1.38:5000';
+  //static const String logurl= 'http://34.228.7.255:5000';
   static Future<List<logmodel>> fetchLogs() async {
     const url = '$logurl/read';
     final uri = Uri.parse(url);
