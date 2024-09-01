@@ -141,8 +141,9 @@ class _miCamaraState extends State<miCamara> {
             Positioned(
               bottom: 15,
               right: 16,
-              child: FloatingActionButton(onPressed: (){
-                //print(oracion);
+              child: FloatingActionButton(
+                heroTag: 'post',
+                onPressed: (){
                 postLog(oracion);
               },
               backgroundColor: Colors.indigo,
@@ -153,7 +154,9 @@ class _miCamaraState extends State<miCamara> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(child: const Icon(Icons.camera_alt),
+      floatingActionButton: FloatingActionButton(
+          heroTag: 'camera',
+          child: const Icon(Icons.camera_alt),
         onPressed: (){
           if(_timer == null || !_timer!.isActive){
             _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
@@ -167,9 +170,7 @@ class _miCamaraState extends State<miCamara> {
               palabra = ' ';
             });
           }
-
           //initTranslation();
-
         }),
     );
   }
@@ -290,7 +291,6 @@ class SplashScreen extends StatelessWidget {
             const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {
-              print('boton 2');
               Navigator.pushNamed(context, '/back');
           },
             style: ElevatedButton.styleFrom(
