@@ -21,14 +21,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: miHome()
+    return MaterialApp(
+      //home: miHome(idx: 0)
+      home: const SplashScreen(),
+      routes: {'/front': (context) => const miHome(idx: 0),
+        '/back': (context) => const miHome(idx: 1)
+      },
     );
   }
 }
 
 class miHome extends StatefulWidget {
-  const miHome({super.key});
+  final int idx;
+  const miHome({super.key, required this.idx});
 
   @override
   State<miHome> createState() => _miHomeState();
@@ -51,7 +56,7 @@ class _miHomeState extends State<miHome> {
           NavigationDestination(icon: Icon(Icons.add_chart), label: 'logs')
       ],
       ),body:<Widget>[
-        const miCamara(),
+        miCamara(cameraIndex: widget.idx),
         const LogsView()
     ][currentPageIndex],
     );
@@ -60,8 +65,8 @@ class _miHomeState extends State<miHome> {
 
 
 class miCamara extends StatefulWidget {
-  const miCamara({super.key});
-
+  final int cameraIndex;
+  const miCamara({super.key, required this.cameraIndex});
   @override
   State<miCamara> createState() => _miCamaraState();
 }
@@ -83,7 +88,8 @@ class _miCamaraState extends State<miCamara> {
   @override
   void initState() {
     super.initState();
-    controller = CameraController(_cameras[0], ResolutionPreset.medium);
+    controller = CameraController(_cameras[widget.cameraIndex], ResolutionPreset.medium);
+    print('aqui: ${_cameras.toString()}');
     controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -136,7 +142,7 @@ class _miCamaraState extends State<miCamara> {
               bottom: 15,
               right: 16,
               child: FloatingActionButton(onPressed: (){
-                print(oracion);
+                //print(oracion);
                 postLog(oracion);
               },
               backgroundColor: Colors.indigo,
@@ -243,5 +249,65 @@ class _miCamaraState extends State<miCamara> {
   }
 
 }
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+            ),
+    Center(
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+          const Text(
+            'Bienvenido a SignApp',
+                  style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  ),
+          ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+              print('boton 1');
+              Navigator.pushNamed(context, '/front');
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black45,
+                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
+            child: const Text('Frontal'),
+                                ),
+            const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              print('boton 2');
+              Navigator.pushNamed(context, '/back');
+          },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black45,
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+          ),
+            child: const Text('Trasera'),
+          ),
+          ],
+          ),
+        ),
+        ],
+        ),
+    );
+  }
+}
+
 
 
