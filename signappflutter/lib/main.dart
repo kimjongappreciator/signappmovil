@@ -77,7 +77,7 @@ class _miCamaraState extends State<miCamara> {
 
   final ScreenshotController screenshotController = ScreenshotController();
 
-  final IO.Socket socket = IO.io('http://192.168.1.38:5000', <String, dynamic>{
+  final IO.Socket socket = IO.io('http://190.233.148.19:5000', <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
   });
@@ -279,14 +279,14 @@ class SplashScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-              print('boton 1');
+              //print('boton 1');
               Navigator.pushNamed(context, '/front');
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black45,
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
-            child: const Text('Frontal'),
+            child: const Text('Cam Principal  '),
                                 ),
             const SizedBox(height: 10),
           ElevatedButton(
@@ -298,7 +298,7 @@ class SplashScreen extends StatelessWidget {
               foregroundColor: Colors.black45,
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
           ),
-            child: const Text('Trasera'),
+            child: const Text('Cam Secundaria'),
           ),
           ],
           ),

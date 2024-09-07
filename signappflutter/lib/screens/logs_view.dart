@@ -22,14 +22,16 @@ class _LogsViewState extends State<LogsView> {
         title: const Text('Traducciones', style: TextStyle(color: Colors.black),),
         backgroundColor: Colors.white54,
       ),
-      body: ListView.builder(itemCount: logs.length, itemBuilder: (context, index){
-        return ListTile(title: Text("Traduccion del ${logs[index].date}"),
-        subtitle: Text("${logs[index].log}"),
-        trailing: IconButton(onPressed: () { 
-          showMessage(logs[index].date.toString(),logs[index].log.toString());
-          //writer.writeCsv(logs[index].log.toString(), logs[index].date.toString());
-        }, icon: const Icon(Icons.download),),);
-      },),
+      body: logs.isEmpty
+          ? const Center(child: Text('No se encontraron registros'))
+          :ListView.builder(itemCount: logs.length, itemBuilder: (context, index){
+          return ListTile(title: Text("Traduccion del ${logs[index].date}"),
+          subtitle: Text("${logs[index].log}"),
+          trailing: IconButton(onPressed: () {
+            showMessage(logs[index].date.toString(),logs[index].log.toString());
+            //writer.writeCsv(logs[index].log.toString(), logs[index].date.toString());
+          }, icon: const Icon(Icons.download),),);
+        },),
     );
   }
   @override
@@ -60,12 +62,14 @@ class _LogsViewState extends State<LogsView> {
               TextButton(
                 onPressed: () {
                   writer.writeCsv(content, title);
+                  Navigator.pop(context);
                 },
                 child: const Text('CSV'),
               ),
               TextButton(
                 onPressed: () {
                    writer.writeTxt(content, title);
+                   Navigator.pop(context);
                 },
                 child: const Text('TXT'),
               ),
