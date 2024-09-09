@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
       routes: {'/front': (context) => const miHome(idx: 0),
         '/back': (context) => const miHome(idx: 1)
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -89,7 +90,7 @@ class _miCamaraState extends State<miCamara> {
   void initState() {
     super.initState();
     controller = CameraController(_cameras[widget.cameraIndex], ResolutionPreset.medium);
-    print('aqui: ${_cameras.toString()}');
+    //print('aqui: ${_cameras.toString()}');
     controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -197,7 +198,7 @@ class _miCamaraState extends State<miCamara> {
      Map<String, dynamic> json = {
        'frames': base64img,
      };
-     String jsonString = jsonEncode(json);
+     //String jsonString = jsonEncode(json);
      //print("emit");
      socket.emit('message', {'frames': base64img});
 
@@ -244,7 +245,7 @@ class _miCamaraState extends State<miCamara> {
     DateTime date = DateTime(now.year, now.month, now.day);
     String str = date.toString();
     logmodel body = logmodel(log: log, date: str );
-    var json = body.toJson();
+    //var json = body.toJson();
     var res = await logApi.postLog(body);
     showMessage(res);
   }

@@ -11,8 +11,8 @@ class logmodel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data['date'] = this.date;
-    data['log'] = this.log;
+    data['date'] = date;
+    data['log'] = log;
     return data;
   }
 }
