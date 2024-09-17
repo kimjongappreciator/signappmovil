@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class logApi{
   //static const String logurl= 'http://192.168.1.38:5000';
-  static const String logurl= 'http://190.233.129.207:5000';
+  static const String logurl= 'http://190.232.97.96:5000';
   static Future<List<logmodel>> fetchLogs() async {
     const url = '$logurl/read';
     final uri = Uri.parse(url);
