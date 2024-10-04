@@ -78,7 +78,7 @@ class _miCamaraState extends State<miCamara> {
 
   final ScreenshotController screenshotController = ScreenshotController();
 
-  final IO.Socket socket = IO.io('http://190.232.97.96:5000', <String, dynamic>{
+  final IO.Socket socket = IO.io('http://181.67.75.85:5000', <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
   });
@@ -185,7 +185,6 @@ class _miCamaraState extends State<miCamara> {
         .capture(delay: const Duration(milliseconds: 5), pixelRatio: 0.5)
         .then((capturedImage) async {
       convert(capturedImage);
-      //ShowCapturedWidget(context, capturedImage!);
     }).catchError((onError) {
       print(onError);
     });
