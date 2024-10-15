@@ -62,6 +62,7 @@ class _LogsViewState extends State<LogsView> {
               TextButton(
                 onPressed: () {
                   writer.writeCsv(content, title);
+                  print('Downloads $title');
                   Navigator.pop(context);
                 },
                 child: const Text('CSV'),
@@ -69,6 +70,7 @@ class _LogsViewState extends State<LogsView> {
               TextButton(
                 onPressed: () {
                    writer.writeTxt(content, title);
+                   print('Downloads $title');
                    Navigator.pop(context);
                 },
                 child: const Text('TXT'),

@@ -22,9 +22,11 @@ class logWrite {
   Future<File> writeTxt(String content,String title) async {
     await requestStoragePermission();
     String newTitle = title.replaceAll("/", "-");
+    newTitle = newTitle.substring(0,10);
+    //quitar 0000
     //final directory = await _localPath;
     final pathOfTheFileToWrite = "/storage/emulated/0/Download/$newTitle.txt";
-    print(pathOfTheFileToWrite.toString());
+    //print(pathOfTheFileToWrite.toString());
     File file = File(pathOfTheFileToWrite);
     // Write the file
     return file.writeAsString(content);

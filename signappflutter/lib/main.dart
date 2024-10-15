@@ -97,14 +97,16 @@ class _miCamaraState extends State<miCamara> {
       }
     }).catchError((Object e) {
       if (e is CameraException) {
-        switch (e.code) {
+        print('error al acceder a la camara');
+        cameraError();
+        /*switch (e.code) {
           case 'CameraAccessDenied':
           // Handle access errors here.
             break;
           default:
           // Handle other errors here.
             break;
-        }
+        }*/
       }
     });
     socket.connect();
@@ -114,6 +116,16 @@ class _miCamaraState extends State<miCamara> {
         palabra = data['prediction'];
         oracion = '$oracion $palabra';
       });
+    });
+    socket.on('connect_error', (data) {
+      connectionError();
+    });
+    socket.on('connect_timeout', (data) {
+      connectionError();
+    });
+    socket.on('disconnect', (reason) {
+      // Handle disconnection
+      print('Desconectado: $reason');
     });
   }
 
@@ -247,6 +259,42 @@ class _miCamaraState extends State<miCamara> {
     //var json = body.toJson();
     var res = await logApi.postLog(body);
     showMessage(res);
+  }
+
+  void cameraError(){
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Error'),
+        content: const Text('No se pudo acceder a la camara'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void connectionError(){
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Error'),
+        content: const Text('No se pudo contactar con el servidor'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
 }
