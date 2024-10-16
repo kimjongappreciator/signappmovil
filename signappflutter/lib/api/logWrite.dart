@@ -32,8 +32,9 @@ class logWrite {
     return file.writeAsString(content);
   }
 
-  Future<void> writeCsv(String content, String title) async{
+  Future<File> writeCsv(String content, String title) async{
     String newTitle = title.replaceAll("/", "-");
+    newTitle = newTitle.substring(0,10);
     //final directory = await _localPath;
     final pathOfTheFileToWrite = "/storage/emulated/0/Download/$newTitle.csv";
     List<String> arr = content.split(' ');
@@ -41,6 +42,6 @@ class logWrite {
     List<List<String>> data = [arr];
     String csv = const ListToCsvConverter().convert(data);
     File file = File(pathOfTheFileToWrite);
-    file.writeAsString(csv);
+    return file.writeAsString(csv);
   }
 }

@@ -60,18 +60,37 @@ class _LogsViewState extends State<LogsView> {
           Row(
             children: [
               TextButton(
-                onPressed: () {
-                  writer.writeCsv(content, title);
+                onPressed: () async {
+                  dynamic res = 0;
                   print('Downloads $title');
-                  Navigator.pop(context);
+                  res = await saveFile(content, title, 0);
+                  if(res == 1){
+                    showPath(1);
+                  }
+                  else{
+                  showPath(0);
+                  }
+
+                  //writer.writeCsv(content, title);
+                  //print('Downloads $title');
+                  //Navigator.pop(context);
                 },
                 child: const Text('CSV'),
               ),
               TextButton(
-                onPressed: () {
-                   writer.writeTxt(content, title);
-                   print('Downloads $title');
-                   Navigator.pop(context);
+                onPressed: () async {
+                  dynamic res = 0;
+                  print('Downloads $title');
+                  res = await saveFile(content, title, 1);
+                  if(res == 1){
+                    showPath(1);
+                  }
+                  else{
+                    showPath(0);
+                  }
+                   //writer.writeTxt(content, title);
+                   //print('Downloads $title');
+                   //Navigator.pop(context);
                 },
                 child: const Text('TXT'),
               ),
@@ -81,4 +100,48 @@ class _LogsViewState extends State<LogsView> {
       ),
     );
   }
+  void showPath(int status){
+    String titulo = '';
+    String cuerpo = '';
+    if(status == 1){
+      titulo = 'Exito';
+      cuerpo = 'Archivo guardado con exito en Downloads';
+    }
+    else{
+      titulo = 'Error';
+      cuerpo = 'Error al intentar guardar archivo';
+    }
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(titulo),
+        content: Text(cuerpo),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'OK');
+              Navigator.pop(context);
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+  Future<int> saveFile(String content, String title, int type)async {
+    try{
+      if(type == 0){
+          await writer.writeCsv(content, title);
+          return 1;
+      }
+      else{
+          await writer.writeTxt(content, title);
+          return 1;
+      }
+    }
+    catch(e){
+      return 0;
+    }
+  }
+
 }
