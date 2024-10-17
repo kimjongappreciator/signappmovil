@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class logApi{
   //static const String logurl= 'http://192.168.1.38:5000';
-  static const String logurl= 'http://190.232.156.23:5000';
+  static const String logurl= 'http://190.232.134.240:5000';
   static Future<List<logmodel>> fetchLogs() async {
     const url = '$logurl/read';
     final uri = Uri.parse(url);
@@ -24,6 +24,14 @@ class logApi{
     final uri = Uri.parse(url);
     final json = jsonEncode(body);
     final res = await http.post(uri, headers: headers, body: json);
+    return res.statusCode;
+  }
+
+  static Future<dynamic> testConnection() async{
+    final headers = {"Content-type": "application/json"};
+    const url = '$logurl/test';
+    final uri = Uri.parse(url);
+    final res = await http.get(uri, headers: headers);
     return res.statusCode;
   }
 

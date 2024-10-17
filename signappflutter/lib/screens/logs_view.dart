@@ -37,7 +37,21 @@ class _LogsViewState extends State<LogsView> {
   @override
   void initState(){
     super.initState();
-    getLogs();
+    testConnection();
+    //getLogs();
+  }
+
+  void testConnection() async{
+    try{
+      var status = await logApi.testConnection();
+      if(status == 200){
+        getLogs();
+      }else{
+        errorDialog();
+      }
+    }catch(e){
+      errorDialog();
+    }
   }
   Future<void> getLogs() async{
     final response = await logApi.fetchLogs();
@@ -45,6 +59,27 @@ class _LogsViewState extends State<LogsView> {
     setState(() {
       logs = response;
     });
+  }
+
+  void errorDialog(){
+    String titulo = 'Error';
+    String cuerpo = 'Sin respuesta del servidor';
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(titulo),
+        content: Text(cuerpo),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'OK');
+              Navigator.pop(context);
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   void showMessage(String title, String content){
@@ -131,12 +166,22 @@ class _LogsViewState extends State<LogsView> {
   Future<int> saveFile(String content, String title, int type)async {
     try{
       if(type == 0){
-          await writer.writeCsv(content, title);
-          return 1;
+          dynamic res = await writer.writeCsv(content, title);
+          if(res != null){
+            print('aqui');
+            return 1;
+          }else{
+            return 0;
+          }
       }
       else{
-          await writer.writeTxt(content, title);
-          return 1;
+          dynamic res = await writer.writeTxt(content, title);
+          print('aqui');
+          if(res != null){
+            return 1;
+          }else{
+            return 0;
+          }
       }
     }
     catch(e){
