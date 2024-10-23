@@ -54,6 +54,7 @@ class logWrite {
 
   Future<File?> writeCsv(String content, String title, String version) async{
     PermissionStatus status = PermissionStatus.granted;
+    //int ver = int.parse(version);
     // Solicitar permiso
     if(version != '12'){
       status = PermissionStatus.granted;
