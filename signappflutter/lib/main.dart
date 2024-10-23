@@ -172,7 +172,7 @@ class _miCamaraState extends State<miCamara> {
           child: const Icon(Icons.camera_alt),
         onPressed: (){
           if(_timer == null || !_timer!.isActive){
-            _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+            _timer = Timer.periodic(const Duration(milliseconds: 60), (timer) {
               startCapture();
             });
           }else{

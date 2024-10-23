@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:signappflutter/api/logApi.dart';
 import 'package:signappflutter/api/logWrite.dart';
-
+import 'package:device_info_plus/device_info_plus.dart';
 import '../model/logModel.dart';
 
 class LogsView extends StatefulWidget {
@@ -15,6 +15,8 @@ class _LogsViewState extends State<LogsView> {
 
   List<logmodel> logs = [];
   logWrite writer = logWrite();
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  late AndroidDeviceInfo androidInfo;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +39,7 @@ class _LogsViewState extends State<LogsView> {
   @override
   void initState(){
     super.initState();
+    initDeviceInfo();
     testConnection();
     //getLogs();
   }
@@ -163,20 +166,25 @@ class _LogsViewState extends State<LogsView> {
       ),
     );
   }
+
+  Future<void> initDeviceInfo() async {
+    androidInfo = await deviceInfo.androidInfo;
+    //print(androidInfo.version.release);
+  }
   Future<int> saveFile(String content, String title, int type)async {
     try{
       if(type == 0){
-          dynamic res = await writer.writeCsv(content, title);
+          dynamic res = await writer.writeCsv(content, title, androidInfo.version.release.toString());
           if(res != null){
-            print('aqui');
+            //print('aqui');
             return 1;
           }else{
             return 0;
           }
       }
       else{
-          dynamic res = await writer.writeTxt(content, title);
-          print('aqui');
+          dynamic res = await writer.writeTxt(content, title, androidInfo.version.release.toString());
+          //print('aqui');
           if(res != null){
             return 1;
           }else{

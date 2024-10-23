@@ -3,7 +3,10 @@ import 'dart:async';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 class logWrite {
+
+
   Future<String?> get _localPath async {
     final directory = await getExternalStorageDirectory();
     return directory?.path;  }
@@ -20,9 +23,15 @@ class logWrite {
     return File('$path/my_file.txt');
   }
 
-  Future<File?> writeTxt(String content, String title) async {
+  Future<File?> writeTxt(String content, String title, String version) async {
+    PermissionStatus status = PermissionStatus.granted;
     // Solicitar permiso
-    var status = await requestStoragePermission();
+    if(version != '12'){
+      status = PermissionStatus.granted;
+    }
+    else{
+      status = await requestStoragePermission();
+    }
 
     if (status.isGranted) {
       String newTitle = title.replaceAll("/", "-");
@@ -43,8 +52,15 @@ class logWrite {
     }
   }
 
-  Future<File?> writeCsv(String content, String title) async{
-    var status = await requestStoragePermission();
+  Future<File?> writeCsv(String content, String title, String version) async{
+    PermissionStatus status = PermissionStatus.granted;
+    // Solicitar permiso
+    if(version != '12'){
+      status = PermissionStatus.granted;
+    }
+    else{
+      status = await requestStoragePermission();
+    }
     if(status.isGranted){
       String newTitle = title.replaceAll("/", "-");
       newTitle = newTitle.substring(0,10);
